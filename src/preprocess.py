@@ -6,6 +6,7 @@ from sklearn.decomposition import PCA, KernelPCA
 from tqdm import tqdm
 
 
+
 class ImagePreprocessor:
     def __init__(self, normalize, hog_tf, pca_tf, lbp_tf, win_size=None, block_size=None,
                  block_stride=None, cell_size=None, nbins=None):
@@ -60,7 +61,7 @@ class ImagePreprocessor:
         return np.array(features)
 
     def pca_transform(self, imgs):
-        pca = KernelPCA(n_components=200, kernel='rbf')
+        pca = PCA(n_components=200, whiten=True)
         pc = pca.fit_transform(imgs)
 
         return pc
@@ -80,3 +81,6 @@ class ImagePreprocessor:
 class TextPreprocessor:
     def __init__(self):
         super().__init__()
+
+    def scale(self, x_train, x_test):
+        return x_train, x_test

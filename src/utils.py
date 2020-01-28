@@ -21,18 +21,31 @@ def load_data(data_name):
 
 
 def tr_va_split(x_train, y_train, n_va, shuffle=False):
-    # config
+    """
+    x_train: np.array
+        Features of all training dataset
+
+    y_train: np.array
+        Label of all training dataset
+
+    n_va: float or int
+        If float, shoud be 0.0 to 1.0 and represent the
+        proportion of validation dataset. If int, represent the
+        absolute number of training dataset
+
+    shuffle: boolean (default=False)
+        Whether or not to shuffle the data before splitting
+    """
     n_samples = x_train.shape[0]
     if n_va < 1:
-        n_va = int(n_samples * n_va)
+        n_va = int(n_samples * n_va)  # from proportion to absolute number
     else:
         n_va = n_va
 
-    # shuffle
     if shuffle:
-        ind_all = np.random.permutation(n_samples)
+        ind_all = np.random.permutation(n_samples)  # shuffle index
     else:
-        ind_all = np.arange(n_samples)
+        ind_all = np.arange(n_samples)  # not shuffle index
 
     yield ind_all[n_va:], ind_all[:n_va]
 

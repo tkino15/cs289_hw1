@@ -1,14 +1,18 @@
 import numpy as np
 import cv2
-from sklearn.decomposition import PCA
+from skimage.feature import local_binary_pattern
+from sklearn.decomposition import PCA, KernelPCA
+
+from tqdm import tqdm
 
 
 class ImagePreprocessor:
-    def __init__(self, normalize, hog_tf, pca_tf, win_size=None, block_size=None,
+    def __init__(self, normalize, hog_tf, pca_tf, lbp_tf, win_size=None, block_size=None,
                  block_stride=None, cell_size=None, nbins=None):
         self.normalize = normalize
         self.hog_tf = hog_tf
         self.pca_tf = pca_tf
+        self.lbp_tf = lbp_tf
         self.win_size = win_size
         self.block_size = block_size
         self.block_stride = block_stride
@@ -40,6 +44,11 @@ class ImagePreprocessor:
             x_train = self.pca_transform(x_train)
             x_test = self.pca_transform(x_test)
 
+        # lbp
+        if self.lbp_tf:
+            x_train = self.lbp_transform(x_train)
+            x_test = self.lbp_transform(x_test)
+
         return x_train, x_test
 
     def hog_transform(self, imgs):
@@ -51,17 +60,23 @@ class ImagePreprocessor:
         return np.array(features)
 
     def pca_transform(self, imgs):
-        pca = PCA(n_components=200)
-        imgs = pca.fit_transform(imgs)
+        pca = KernelPCA(n_components=200, kernel='rbf')
+        pc = pca.fit_transform(imgs)
 
-        return imgs
+        return pc
+
+    def lbp_transform(self, imgs):
+        n_imgs = imgs.shape[0]
+        imgs = imgs.reshape(n_imgs, 32, 32, 3)
+        features = []
+        for img in tqdm(imgs):
+            gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            feature = local_binary_pattern(gray_img, 22, 9, method='uniform')
+            features.append(feature)
+        features = np.array(features).reshape(n_imgs, -1)
+        return features
 
 
 class TextPreprocessor:
-    def __init__(self, d2v_tf):
-        self.d2v_tf = d2v_tf
-
-
-class Cifar10Preprocessor:
-    def __init__(self, normalize):
-        self.normalize = normalize
+    def __init__(self):
+        super().__init__()

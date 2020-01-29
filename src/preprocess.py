@@ -6,7 +6,6 @@ from sklearn.decomposition import PCA, KernelPCA
 from tqdm import tqdm
 
 
-
 class ImagePreprocessor:
     def __init__(self, normalize, hog_tf, pca_tf, lbp_tf, win_size=None, block_size=None,
                  block_stride=None, cell_size=None, nbins=None):
@@ -42,8 +41,10 @@ class ImagePreprocessor:
 
         # pca
         if self.pca_tf:
-            x_train = self.pca_transform(x_train)
-            x_test = self.pca_transform(x_test)
+            x_all = np.concatenate([x_train, x_test], axis=0)
+            x_pc = self.pca_transform(x_all)
+            n_train = x_train.shape[0]
+            x_train, x_test = x_pc[:n_train], x_pc[n_train:]
 
         # lbp
         if self.lbp_tf:

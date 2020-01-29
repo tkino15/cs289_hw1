@@ -3,7 +3,7 @@ from collections import defaultdict
 
 import numpy as np
 import pandas as pd
-from scipy import io
+from scipy import io, stats
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, accuracy_score
@@ -142,4 +142,4 @@ class Trainer:
         for key in self.scores.keys():
             self.scores_mean[key] = np.mean(self.scores[key])
 
-        self.y_test_pred = self.y_test_pred.mean(axis=1).ravel()
+        self.y_test_pred = stats.mode(self.y_test_pred, axis=1)[0].ravel()

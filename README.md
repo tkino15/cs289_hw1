@@ -5,17 +5,19 @@ Spring 2020 CS 289 HW1
 Takuma Kinoshita (3034401803)
 
 # Instructions
-Each type of output will be saved at the following directories:
-- Log: `log/`
-- Figures: `figures/`
-- Submission File: `data/output/`
-
-Usage of the main script `src/run.py`:
+After you save input data at `data/input/`, you can run the main script `src/run.py`.
 ```
 python src/run.py [-h] problem data_name
 ```
 - `problem`: problem number (e.g. 2, 3, 4)
 - `data_name`: dataset name (e.g. mnist, spam, cifar10)
+
+Each type of output will be saved at the following directories:
+- Log: `log/`
+- Figures: `figures/`
+- Splitted data: `data/split/`
+- Submission file: `data/output/`
+
 
 ## 2. Data Partitioning
 
